@@ -1,0 +1,48 @@
+EXPLANATION: Palindrome Number (LeetCode 9)
+
+PROBLEM
+Given an integer x, return true if it reads the same forwards and backwards, otherwise false.
+
+STEP 1: HANDLE EDGE CASES
+- Negative numbers (e.g. -121) are never palindromes, because reversed they read 121-.
+- Numbers ending in 0 (e.g. 10, 120) can't be palindromes, because they would have to start with 0 too. The only exception is 0 itself.
+So: if x < 0 or (x % 10 == 0 and x != 0), return False.
+
+STEP 2: THE IDEA (NO STRING CONVERSION)
+Reverse only the second half of the number and compare it with the first half.
+Reversing the whole number could overflow in languages with fixed-size integers. Reversing half avoids that and does half the work.
+
+STEP 3: HOW THE LOOP WORKS
+Repeat while x > reversed_half:
+  - Take the last digit of x:        x % 10
+  - Push it onto reversed_half:      reversed_half = reversed_half * 10 + x % 10
+  - Remove that digit from x:        x //= 10
+When reversed_half >= x, we have processed half of the digits.
+
+STEP 4: FINAL COMPARISON
+- Even number of digits: x == reversed_half
+- Odd number of digits: the middle digit ends up in reversed_half, so drop it with reversed_half // 10 and compare with x.
+Return: x == reversed_half or x == reversed_half // 10
+
+EXAMPLE 1: x = 1221 (even length)
+  Start:  x = 1221, reversed_half = 0
+  Step 1: x = 122,  reversed_half = 1
+  Step 2: x = 12,   reversed_half = 12
+  Loop stops (12 > 12 is false). x == reversed_half -> True
+
+EXAMPLE 2: x = 121 (odd length)
+  Start:  x = 121, reversed_half = 0
+  Step 1: x = 12,  reversed_half = 1
+  Step 2: x = 1,   reversed_half = 12
+  Loop stops (1 > 12 is false). reversed_half // 10 = 1, x == 1 -> True
+
+EXAMPLE 3: x = 10
+  x % 10 == 0 and x != 0 -> False immediately
+
+COMPLEXITY
+- Time:  O(log10 n), because we process about half of the digits.
+- Space: O(1), because only a few integer variables are used.
+
+NOTE ON THE STRING VERSION
+s = str(x); return s == s[::-1] is shorter, but it uses O(log n) extra space.
+The follow-up asks for the math approach above.
